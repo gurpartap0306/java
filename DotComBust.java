@@ -5,7 +5,7 @@ import java.util.*;
 public class DotComBust(){
 
 private GameHelper helper = new GameHelper();
-private ArrayList<DotCom> dotComslist = new ArrayList<DotCom>;
+private ArrayList<DotCom> dotComsList = new ArrayList<DotCom>;
 
 public void setUpGame(){
   //first make some dot coms and give them locatiion
@@ -15,18 +15,46 @@ public void setUpGame(){
   two.setName("eToys.com");
   DotCom three = new DotCom();
   three.setName("Go2.com");
-  dotComslist.add(one);
-  dotComslist.add(two);
-  dotComslist.add(three);
+  dotComsList.add(one);
+  dotComsList.add(two);
+  dotComsList.add(three);
 
-  for (DotCom dotComToSet : dotComslist) {
+  for (DotCom dotComToSet : dotComsList) {
     ArrayList<String> newLocation = helper.placeDotCom(3);
     dotComToSet.setLocationCells(newLocation);
   }//close for loop
 }//close setUpGame method
 
+private void startPlaying(){
+  while(!dotComsList.isEmpty()){
+    String userGuess = helper.getUserInput("Enter a guess");
+    checkUserGuess(userGuess);
+  }//close while
+  finishGame();
+}//close startPlaying method
+
+private void checkUserGuess(String userGuess){
+  numOfGuesses++;
+  String result ="miss";
+
+  for(dotComToTest : dotComsList){
+    result = dotComToSet.checkYourself(userGuess);
+    if(result.equals("hit")){
+      break;
+    }
+    if(result.equals("kill")){
+      dotComsList.remove(dotComToTest);
+      break;
+    }
+  }//close for
+
+  System.out.println(result);
+}//close method
+
   public static void main(String[] args){
-    DotComBust ob = new DotComBust();
+    DotComBust game = new DotComBust();
+    game.setUpGame();
+    game.startPlaying();
 
   }
 }
@@ -50,6 +78,19 @@ public class GameHelper{
   private int gridSize = 49;
   private int [] grid =new int[gridSize];
   private int comCount = 0;
+
+  public String getUserInput(String prompt){
+    String inputLine = null;
+    System.out.print(prompt + " ");
+    try{
+      BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
+      inputLine = is.readLine();
+      if(inputLine.length() == 0)return 0;
+    } catch (IOException e){
+      System.out.println("IOException: " + e);
+    }
+    return inputLine.toLowerCase();
+  }
 
   public ArrayList<String> placeDotCom(int comSize) {
     ArrayList<String> alphaCells = new ArrayList<String>();
